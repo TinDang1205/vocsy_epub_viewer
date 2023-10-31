@@ -161,7 +161,14 @@ public class EpubViewerPlugin implements MethodCallHandler, FlutterPlugin, Activ
 
                 }
             });
-        } else {
+        } else if (call.method.equals("getDataFromEpubViewer")) {
+            reader.setOnSelectedListener(new OnSelectedListener() {
+                @Override
+                public void onSelectedListener(String data) {
+                    result.success(data);
+                }
+            });
+        }else {
             result.notImplemented();
         }
     }

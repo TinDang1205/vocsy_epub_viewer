@@ -74,6 +74,11 @@ class VocsyEpub {
     await _channel.invokeMethod('setChannel');
   }
 
+  static Future<String> getDataFromEpubViewer() async {
+    final String data = await _channel.invokeMethod('getDataFromEpubViewer');
+    return data;
+  }
+
   /// Stream to get EpubLocator for android and pageNumber for iOS
   static Stream get locatorStream {
     print("In stream");

@@ -24,7 +24,7 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
 
-public class Reader implements OnHighlightListener, ReadLocatorListener, FolioReader.OnClosedListener {
+public class Reader implements OnHighlightListener, ReadLocatorListener, FolioReader.OnClosedListener,FolioReader.OnClosedListener {
 
     private ReaderConfig readerConfig;
     public FolioReader folioReader;
@@ -35,6 +35,16 @@ public class Reader implements OnHighlightListener, ReadLocatorListener, FolioRe
     private BinaryMessenger messenger;
     private ReadLocator read_locator;
     private static final String PAGE_CHANNEL = "sage";
+    private OnSelectedListener onSelectedListener;
+
+    public interface OnSelectedListener {
+        void onSelectedListener(String data);
+    }
+
+    public void setOnSelectedListener(OnSelectedListener onSelectedListener) {
+        this.onSelectedListener = onSelectedListener;
+    }
+
 
     Reader(Context context, BinaryMessenger messenger, ReaderConfig config, EventChannel.EventSink sink) {
         this.context = context;
@@ -46,7 +56,8 @@ public class Reader implements OnHighlightListener, ReadLocatorListener, FolioRe
         folioReader = FolioReader.get()
                 .setOnHighlightListener(this)
                 .setReadLocatorListener(this)
-                .setOnClosedListener(this);
+                .setOnClosedListener(this)
+                .setOnSelectedListener(this);
         pageEventSink = sink;
     }
 
@@ -185,5 +196,12 @@ public class Reader implements OnHighlightListener, ReadLocatorListener, FolioRe
         read_locator = readLocator;
     }
 
+    @Override
+    public void onSelectedListener(String data) {
+        Log.v(LOG_TAG, data);
+        if (onSelectedListener != null) {
+            onSelectedListener.onSelectedListener(data);
+        }
+    }
 
 }
