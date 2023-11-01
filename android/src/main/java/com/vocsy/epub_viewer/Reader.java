@@ -1,6 +1,7 @@
 package com.vocsy.epub_viewer;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -24,7 +25,7 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
 
-public class Reader implements OnHighlightListener, ReadLocatorListener, FolioReader.OnClosedListener,FolioReader.OnClosedListener {
+public class Reader implements OnHighlightListener, ReadLocatorListener, FolioReader.OnClosedListener, FolioReader.OnSelectedListener {
 
     private ReaderConfig readerConfig;
     public FolioReader folioReader;
@@ -32,23 +33,18 @@ public class Reader implements OnHighlightListener, ReadLocatorListener, FolioRe
     public MethodChannel.Result result;
     private EventChannel eventChannel;
     private EventChannel.EventSink pageEventSink;
+    private EventChannel.EventSink selectedEventSink;
     private BinaryMessenger messenger;
     private ReadLocator read_locator;
+
     private static final String PAGE_CHANNEL = "sage";
-    private OnSelectedListener onSelectedListener;
-
-    public interface OnSelectedListener {
-        void onSelectedListener(String data);
-    }
-
-    public void setOnSelectedListener(OnSelectedListener onSelectedListener) {
-        this.onSelectedListener = onSelectedListener;
-    }
+    private static final String SELECTED_TEXT_CHANNEL = "selected_text";
 
 
     Reader(Context context, BinaryMessenger messenger, ReaderConfig config, EventChannel.EventSink sink) {
         this.context = context;
         readerConfig = config;
+        this.messenger = messenger;
 
         getHighlightsAndSave();
         //setPageHandler(messenger);
@@ -101,7 +97,6 @@ public class Reader implements OnHighlightListener, ReadLocatorListener, FolioRe
                 public void onListen(Object o, EventChannel.EventSink eventSink) {
 
                     Log.i("event sink is", "this is eveent sink:");
-
                     pageEventSink = eventSink;
                     if (pageEventSink == null) {
                         Log.i("empty", "Sink is empty");
@@ -198,9 +193,10 @@ public class Reader implements OnHighlightListener, ReadLocatorListener, FolioRe
 
     @Override
     public void onSelectedListener(String data) {
-        Log.v(LOG_TAG, data);
-        if (onSelectedListener != null) {
-            onSelectedListener.onSelectedListener(data);
+        if (!TextUtils.isEmpty(data)){
+            if (pageEventSink != null) {
+                pageEventSink.success(data);
+            }
         }
     }
 

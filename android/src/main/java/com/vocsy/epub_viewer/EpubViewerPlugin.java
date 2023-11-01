@@ -61,6 +61,23 @@ public class EpubViewerPlugin implements MethodCallHandler, FlutterPlugin, Activ
             }
         });
 
+        new EventChannel(messenger, "selected_text").setStreamHandler(new EventChannel.StreamHandler() {
+
+            @Override
+            public void onListen(Object o, EventChannel.EventSink eventSink) {
+
+                sink = eventSink;
+                if (sink == null) {
+                    Log.i("empty", "Sink is empty");
+                }
+            }
+
+            @Override
+            public void onCancel(Object o) {
+
+            }
+        });
+
 
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "vocsy_epub_viewer");
         channel.setMethodCallHandler(new EpubViewerPlugin());
@@ -87,6 +104,23 @@ public class EpubViewerPlugin implements MethodCallHandler, FlutterPlugin, Activ
 
             }
         });
+        new EventChannel(messenger, "selected_text").setStreamHandler(new EventChannel.StreamHandler() {
+
+            @Override
+            public void onListen(Object o, EventChannel.EventSink eventSink) {
+
+                sink = eventSink;
+                if (sink == null) {
+                    Log.i("empty", "Sink is empty");
+                }
+            }
+
+            @Override
+            public void onCancel(Object o) {
+
+            }
+        });
+
         channel = new MethodChannel(binding.getFlutterEngine().getDartExecutor(), channelName);
         channel.setMethodCallHandler(this);
     }
@@ -117,8 +151,7 @@ public class EpubViewerPlugin implements MethodCallHandler, FlutterPlugin, Activ
     }
 
     @Override
-    public void onMethodCall(MethodCall call, Result result) {
-
+    public void onMethodCall(MethodCall call, Result result) {;
         if (call.method.equals("setConfig")) {
             Map<String, Object> arguments = (Map<String, Object>) call.arguments;
             String identifier = arguments.get("identifier").toString();
@@ -161,14 +194,7 @@ public class EpubViewerPlugin implements MethodCallHandler, FlutterPlugin, Activ
 
                 }
             });
-        } else if (call.method.equals("getDataFromEpubViewer")) {
-            reader.setOnSelectedListener(new OnSelectedListener() {
-                @Override
-                public void onSelectedListener(String data) {
-                    result.success(data);
-                }
-            });
-        }else {
+        } else {
             result.notImplemented();
         }
     }

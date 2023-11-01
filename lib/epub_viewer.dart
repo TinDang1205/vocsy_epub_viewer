@@ -14,6 +14,7 @@ part 'utils/util.dart';
 class VocsyEpub {
   static const MethodChannel _channel = const MethodChannel('vocsy_epub_viewer');
   static const EventChannel _pageChannel = const EventChannel('page');
+  static const EventChannel _selectedChannel = const EventChannel('selected_text');
 
   /// Configure Viewer's with available values
   ///
@@ -23,11 +24,11 @@ class VocsyEpub {
   /// enableTts is an option to enable the inbuilt Text-to-Speech
   static void setConfig(
       {Color themeColor = Colors.blue,
-      String identifier = 'book',
-      bool nightMode = false,
-      EpubScrollDirection scrollDirection = EpubScrollDirection.ALLDIRECTIONS,
-      bool allowSharing = false,
-      bool enableTts = false}) async {
+        String identifier = 'book',
+        bool nightMode = false,
+        EpubScrollDirection scrollDirection = EpubScrollDirection.ALLDIRECTIONS,
+        bool allowSharing = false,
+        bool enableTts = false}) async {
     Map<String, dynamic> agrs = {
       "identifier": identifier,
       "themeColor": Util.getHexFromColor(themeColor),
@@ -74,9 +75,11 @@ class VocsyEpub {
     await _channel.invokeMethod('setChannel');
   }
 
-  static Future<String> getDataFromEpubViewer() async {
-    final String data = await _channel.invokeMethod('getDataFromEpubViewer');
-    return data;
+  static Stream get selectedStream {
+    print("In stream");
+    Stream pageStream = _selectedChannel.receiveBroadcastStream().map((value) => value);
+
+    return pageStream;
   }
 
   /// Stream to get EpubLocator for android and pageNumber for iOS
