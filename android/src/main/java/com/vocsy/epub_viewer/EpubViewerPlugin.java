@@ -179,6 +179,10 @@ public class EpubViewerPlugin implements MethodCallHandler, FlutterPlugin, Activ
 
         } else if (call.method.equals("close")) {
             reader.close();
+        }else if (call.method.equals("loadUrlOpenAI")) {
+            Map<String, Object> arguments = (Map<String, Object>) call.arguments;
+            String url = arguments.get("url").toString();
+            reader.loadUrlOpenAI(url);
         } else if (call.method.equals("setChannel")) {
             eventChannel = new EventChannel(messenger, "page");
             eventChannel.setStreamHandler(new EventChannel.StreamHandler() {

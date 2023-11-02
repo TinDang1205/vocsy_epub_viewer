@@ -56,6 +56,13 @@ class VocsyEpub {
     await _channel.invokeMethod('close');
   }
 
+  static void loadUrlOpenAI(String url) async {
+    Map<String, dynamic> agrs = {
+      "url": url,
+    };
+    await _channel.invokeMethod('loadUrlOpenAI', agrs);
+  }
+
   /// bookPath should be an asset file path.
   /// Last location is only available for android.
   static Future openAsset(String bookPath, {EpubLocator? lastLocation}) async {

@@ -83,6 +83,10 @@ public class Reader implements OnHighlightListener, ReadLocatorListener, FolioRe
         folioReader.close();
     }
 
+    public void loadUrlOpenAI(String url) {
+        folioReader.loadUrlOpenAI(url);
+    }
+
     private void setPageHandler(BinaryMessenger messenger) {
 //        final MethodChannel channel = new MethodChannel(registrar.messenger(), "page");
 //        channel.setMethodCallHandler(new EpubKittyPlugin());
